@@ -13,7 +13,7 @@ async function seed() {
       id: eventId,
       title: 'Unite Summit',
       slug: 'unite-summit',
-      details: 'Um evento p/ devs apaixonados(as) por código!',
+      details: 'An event made for developers who love to code!',
       maximumAttendees: 120,
     },
   })
