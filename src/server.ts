@@ -1,36 +1,35 @@
-import fastify, { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
-import { PrismaClient } from '@prisma/client'
-import { generateSlug } from './utils/generate-slug'
+import fastify from 'fastify'
+import fastifySwagger from '@fastify/swagger'
+import fastifySwaggerUI from '@fastify/swagger-ui'
+import {
+  validatorCompiler,
+  serializerCompiler,
+  jsonSchemaTransform,
+} from 'fastify-type-provider-zod'
+import { createEvent } from './routes/create-event'
 
 const app = fastify()
 
-const prisma = new PrismaClient({
-  log: ['query'],
-})
+app.setValidatorCompiler(validatorCompiler)
+app.setSerializerCompiler(serializerCompiler)
 
-app.post('/events', async (request: FastifyRequest, reply: FastifyReply) => {
-  const createEventSchema = z.object({
-    title: z.string().min(4),
-    details: z.string().nullable(),
-    maximumAttendees: z.number().int().positive().nullable(),
-  })
-
-  const data = createEventSchema.parse(request.body)
-
-  const event = await prisma.event.create({
-    data: {
-      title: data.title,
-      details: data.details,
-      maximumAttendees: data.maximumAttendees,
-      slug: `${generateSlug(data.title)}-${new Date().toISOString()}`,
+app.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: 'SampleApi',
+      description: 'Sample backend service',
+      version: '1.0.0',
     },
-  })
-
-  return reply.status(201).send({
-    eventId: event.id,
-  })
+    servers: [],
+  },
+  transform: jsonSchemaTransform,
 })
+
+app.register(fastifySwaggerUI, {
+  routePrefix: '/documentation',
+})
+
+app.register(createEvent)
 
 app
   .listen({ port: 3333 })
