@@ -1,0 +1,45 @@
+@hostname = localhost
+@port = 3333
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+# @name createEvent
+POST http://{{host}}/events
+Content-Type: {{contentType}}
+
+{
+  "title": "Unite Summit",
+  "details": "An event for people that loves programming!",
+  "maximumAttendees": 100
+}
+
+###
+
+# @name registerForEvent
+POST http://{{host}}/events/4cd6f35a-5c50-43be-8161-7ef362da6af4/attendees
+Content-Type: {{contentType}}
+
+{
+  "name": "Guilherme Crozariol",
+  "email": "guicrozariol@gmail.com"
+}
+
+###
+
+# @name getEvent
+GET http://{{host}}/events/4cd6f35a-5c50-43be-8161-7ef362da6af4
+
+###
+
+# @name getAttendee
+GET http://{{host}}/attendees/1/badge
+
+###
+
+# @name checkIn
+GET http://{{host}}/attendees/1/check-in
+
+###
+
+# @name getEventAttendees
+GET http://{{host}}/events/4cd6f35a-5c50-43be-8161-7ef362da6af4/attendees?query=Guilherme
