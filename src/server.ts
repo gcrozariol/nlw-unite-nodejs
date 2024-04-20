@@ -20,19 +20,21 @@ app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 
 app.register(fastifySwagger, {
-  openapi: {
+  swagger: {
+    consumes: ['application/json'],
+    produces: ['application/json'],
     info: {
-      title: 'NLW Unite',
-      description: 'NLW Unite API',
+      title: 'pass.in',
+      description:
+        "API specifications for the pass.in backend application built during Rocketseat's NLW Unite.",
       version: '1.0.0',
     },
-    servers: [],
   },
   transform: jsonSchemaTransform,
 })
 
 app.register(fastifySwaggerUI, {
-  routePrefix: '/documentation',
+  routePrefix: '/docs',
 })
 
 app.register(createEvent)
