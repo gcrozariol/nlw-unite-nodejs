@@ -5,26 +5,27 @@ import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
 export async function createEvent(app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().route({
-    method: 'POST',
-    url: '/events',
-    schema: {
-      body: z.object({
-        title: z.string().min(4),
-        details: z.string().nullable(),
-        maximumAttendees: z.number().int().positive().nullable(),
-      }),
-      response: {
-        201: z.object({
-          eventId: z.string().uuid(),
+  app.withTypeProvider<ZodTypeProvider>().post(
+    '/events',
+    {
+      schema: {
+        body: z.object({
+          title: z.string().min(4),
+          details: z.string().nullable(),
+          maximumAttendees: z.number().int().positive().nullable(),
         }),
-        409: z.object({
-          message: z.string(),
-        }),
+        response: {
+          201: z.object({
+            eventId: z.string().uuid(),
+          }),
+          409: z.object({
+            message: z.string(),
+          }),
+        },
       },
     },
-    handler: async (req, res) => {
-      const { title, details, maximumAttendees } = req.body
+    async (request, reply) => {
+      const { title, details, maximumAttendees } = request.body
 
       const slug = generateSlug(title)
 
@@ -35,7 +36,7 @@ export async function createEvent(app: FastifyInstance) {
       })
 
       if (eventWithSameSlug) {
-        return res.status(409).send({
+        return reply.status(409).send({
           message: 'Slug already in use',
         })
       }
@@ -49,9 +50,9 @@ export async function createEvent(app: FastifyInstance) {
         },
       })
 
-      return res.status(201).send({
+      return reply.status(201).send({
         eventId: event.id,
       })
     },
-  })
+  )
 }

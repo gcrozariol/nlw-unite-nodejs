@@ -6,7 +6,9 @@ import {
   serializerCompiler,
   jsonSchemaTransform,
 } from 'fastify-type-provider-zod'
+
 import { createEvent } from './routes/create-event'
+import { registerForEvent } from './routes/register-for-event'
 
 const app = fastify()
 
@@ -30,6 +32,7 @@ app.register(fastifySwaggerUI, {
 })
 
 app.register(createEvent)
+app.register(registerForEvent)
 
 app
   .listen({ port: 3333 })
