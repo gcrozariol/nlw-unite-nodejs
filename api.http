@@ -33,3 +33,8 @@ GET http://{{host}}/events/4cd6f35a-5c50-43be-8161-7ef362da6af4
 
 # @name getAttendee
 GET http://{{host}}/attendees/1/badge
+
+###
+
+# @name checkIn
+GET http://{{host}}/attendees/1/check-in
