@@ -31,6 +31,11 @@ GET http://{{host}}/events/4cd6f35a-5c50-43be-8161-7ef362da6af4
 
 ###
 
+# @name fetchEvents
+GET http://{{host}}/events
+
+###
+
 # @name getAttendee
 GET http://{{host}}/attendees/1/badge
 
@@ -42,4 +47,4 @@ GET http://{{host}}/attendees/1/check-in
 ###
 
 # @name getEventAttendees
-GET http://{{host}}/events/4cd6f35a-5c50-43be-8161-7ef362da6af4/attendees?query=Guilherme
+GET http://{{host}}/events/9e9bd979-9d10-4915-b339-3786b1634f33/attendees

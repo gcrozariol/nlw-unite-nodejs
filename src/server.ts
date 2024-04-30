@@ -16,6 +16,7 @@ import { getAttendeeBadge } from './routes/get-attendee-badge'
 import { checkIn } from './routes/check-in'
 import { getEventAttendees } from './routes/get-event-attendees'
 import { errorHandler } from './error-handler'
+import { fetchEvents } from './routes/fetch-events'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -47,6 +48,7 @@ app.register(fastifySwaggerUI, {
 app.register(createEvent)
 app.register(registerForEvent)
 app.register(getEvent)
+app.register(fetchEvents)
 app.register(getAttendeeBadge)
 app.register(checkIn)
 app.register(getEventAttendees)

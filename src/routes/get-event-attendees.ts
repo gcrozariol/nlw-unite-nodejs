@@ -28,6 +28,7 @@ export async function getEventAttendees(app: FastifyInstance) {
                 checkedInAt: z.date().nullable(),
               }),
             ),
+            total: z.number().int(),
           }),
         },
       },
@@ -36,34 +37,37 @@ export async function getEventAttendees(app: FastifyInstance) {
       const { eventId } = request.params
       const { query, pageIndex } = request.query
 
-      const attendees = await prisma.attendee.findMany({
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          createdAt: true,
-          checkIn: {
-            select: {
-              createdAt: true,
+      const [attendees, count] = await prisma.$transaction([
+        prisma.attendee.findMany({
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            createdAt: true,
+            checkIn: {
+              select: {
+                createdAt: true,
+              },
             },
           },
-        },
-        where: query
-          ? {
-              eventId,
-              name: {
-                contains: query,
+          where: query
+            ? {
+                eventId,
+                name: {
+                  contains: query,
+                },
+              }
+            : {
+                eventId,
               },
-            }
-          : {
-              eventId,
-            },
-        take: 10,
-        skip: pageIndex * 10,
-        orderBy: {
-          createdAt: 'desc',
-        },
-      })
+          take: 10,
+          skip: pageIndex * 10,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        prisma.attendee.count(),
+      ])
 
       return reply.status(200).send({
         attendees: attendees.map((attendee) => {
@@ -75,6 +79,7 @@ export async function getEventAttendees(app: FastifyInstance) {
             checkedInAt: attendee.checkIn?.createdAt ?? null,
           }
         }),
+        total: count,
       })
     },
   )
